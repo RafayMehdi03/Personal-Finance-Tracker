@@ -16,10 +16,16 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public AuthService(
+            UserRepository userRepository,
+            BCryptPasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public AuthResponse signup(SignupRequest request) {
@@ -36,9 +42,11 @@ public class AuthService {
         user.setRole(UserRole.USER);
 
         User savedUser = userRepository.save(user);
+        String token = jwtService.generateToken(savedUser);
 
         return new AuthResponse(
                 "Signup successful",
+                token,
                 savedUser.getId(),
                 savedUser.getFullName(),
                 savedUser.getEmail(),
@@ -67,8 +75,11 @@ public class AuthService {
             );
         }
 
+        String token = jwtService.generateToken(user);
+
         return new AuthResponse(
                 "Login successful",
+                token,
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),

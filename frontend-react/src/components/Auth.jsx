@@ -19,6 +19,7 @@ const API_BASE_URL = "http://localhost:8080/api/auth";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -30,6 +31,10 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+
+  const isValidGmail = (email) => {
+    return /^[A-Za-z0-9._%+-]+@gmail\.com$/.test(email);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -55,15 +60,38 @@ const Auth = () => {
       password: "",
       confirmPassword: "",
     });
+
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
+  const validateForm = () => {
+    if (!isValidGmail(formData.email)) {
+      setMessage("Please enter a valid Gmail address.");
+      setMessageType("error");
+      return false;
+    }
+
+    if (formData.password.length < 8) {
+      setMessage("Password must be at least 8 characters.");
+      setMessageType("error");
+      return false;
+    }
+
+    if (!isLogin && formData.password !== formData.confirmPassword) {
+      setMessage("Passwords do not match.");
+      setMessageType("error");
+      return false;
+    }
+
+    return true;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     resetMessage();
 
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match.");
-      setMessageType("error");
+    if (!validateForm()) {
       return;
     }
 
@@ -71,12 +99,12 @@ const Auth = () => {
 
     const payload = isLogin
       ? {
-          email: formData.email,
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
         }
       : {
-          fullName: formData.fullName,
-          email: formData.email,
+          fullName: formData.fullName.trim(),
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
         };
 
@@ -109,11 +137,13 @@ const Auth = () => {
       }
 
       localStorage.setItem("financeos_user", JSON.stringify(data));
+      localStorage.setItem("financeos_token", data.token);
 
       setMessage(data.message || "Success");
       setMessageType("success");
 
       console.log("Auth success:", data);
+      console.log("JWT token:", data.token);
     } catch (error) {
       setMessage(error.message || "Unable to connect to backend.");
       setMessageType("error");
@@ -260,9 +290,11 @@ const Auth = () => {
                   <input
                     type="email"
                     name="email"
-                    placeholder="you@example.com"
+                    placeholder="you@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
+                    pattern="^[A-Za-z0-9._%+-]+@gmail\.com$"
+                    title="Please enter a valid Gmail address"
                     required
                   />
                 </div>
@@ -276,10 +308,10 @@ const Auth = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Enter secure password"
+                    placeholder="Minimum 8 characters"
                     value={formData.password}
                     onChange={handleChange}
-                    minLength={6}
+                    minLength={8}
                     required
                   />
 
@@ -299,15 +331,25 @@ const Auth = () => {
                   <label>Confirm Password</label>
                   <div className="field-box">
                     <Lock size={18} />
+
                     <input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       placeholder="Repeat your password"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      minLength={6}
+                      minLength={8}
                       required
                     />
+
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      aria-label="Toggle confirm password visibility"
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
                 </div>
               )}
@@ -337,7 +379,7 @@ const Auth = () => {
               <BarChart3 size={17} />
               <p>
                 {isLogin
-                  ? "Your login is connected to the Spring Boot backend."
+                  ? "Your login is secured with JWT authentication."
                   : "Your account will be saved securely in PostgreSQL."}
               </p>
             </div>

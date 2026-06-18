@@ -642,3 +642,24 @@
     padding: 26px;
   }
 }
+/* Fix Chrome autofill white background */
+.field-box input:-webkit-autofill,
+.field-box input:-webkit-autofill:hover,
+.field-box input:-webkit-autofill:focus,
+.field-box input:-webkit-autofill:active {
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #f8fafc;
+  box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Keep input text visible */
+.field-box input {
+  color: #f8fafc;
+  background: transparent;
+}
+.field-box input::selection {
+  background: rgba(45, 212, 191, 0.35);
+  color: #ffffff;
+}

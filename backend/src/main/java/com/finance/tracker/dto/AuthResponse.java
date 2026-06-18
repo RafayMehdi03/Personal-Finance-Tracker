@@ -3,6 +3,7 @@ package com.finance.tracker.dto;
 public class AuthResponse {
 
     private String message;
+    private String token;
     private Long userId;
     private String fullName;
     private String email;
@@ -11,8 +12,9 @@ public class AuthResponse {
     public AuthResponse() {
     }
 
-    public AuthResponse(String message, Long userId, String fullName, String email, String role) {
+    public AuthResponse(String message, String token, Long userId, String fullName, String email, String role) {
         this.message = message;
+        this.token = token;
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -21,6 +23,10 @@ public class AuthResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     public Long getUserId() {
@@ -41,6 +47,10 @@ public class AuthResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setUserId(Long userId) {
