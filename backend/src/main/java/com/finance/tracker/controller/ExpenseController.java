@@ -26,4 +26,8 @@ public class ExpenseController {
     public Expense createExpense(@RequestBody Expense expense) {
         return expenseRepository.save(expense);
     }
+    @DeleteMapping("/{id}")
+    public void deleteExpense(@PathVariable Long id) {
+        expenseRepository.deleteById(id);
+    }
 }
