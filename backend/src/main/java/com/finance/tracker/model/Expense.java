@@ -1,35 +1,88 @@
 package com.finance.tracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "expenses")
-public class Expense{
+public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String description;
+
     private BigDecimal amount;
+
     private LocalDate date;
+
     private String category;
 
-    // --- Getters and Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public Expense() {
+    }
 
-    public BigDecimal getAmount() { return amount; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
+    public Expense(String description, BigDecimal amount, LocalDate date, String category, User user) {
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.category = category;
+        this.user = user;
+    }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getDescription() {
+        return description;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

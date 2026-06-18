@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   BadgeDollarSign,
@@ -13,10 +14,12 @@ import {
   User,
 } from "lucide-react";
 import "./Auth.css";
+import BrandLogo from "./brandlogo";
 
 const API_BASE_URL = "http://localhost:8080/api/auth";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -136,14 +139,18 @@ const Auth = () => {
         );
       }
 
-      localStorage.setItem("financeos_user", JSON.stringify(data));
-      localStorage.setItem("financeos_token", data.token);
+      localStorage.setItem("hisaabkitaab_user", JSON.stringify(data));
+      localStorage.setItem("hisaabkitaab_token", data.token);
 
       setMessage(data.message || "Success");
       setMessageType("success");
 
       console.log("Auth success:", data);
       console.log("JWT token:", data.token);
+
+      setTimeout(() => {
+      navigate("/dashboard");
+    }, 500);
     } catch (error) {
       setMessage(error.message || "Unable to connect to backend.");
       setMessageType("error");
@@ -163,13 +170,11 @@ const Auth = () => {
       <section className="auth-shell">
         <div className="auth-visual-panel">
           <nav className="auth-brand">
-            <div className="brand-mark">
-              <BadgeDollarSign size={28} />
-            </div>
+            <BrandLogo size="large" />
 
             <div>
-              <h1>FinanceOS</h1>
-              <p>Personal finance command center</p>
+                <h1>HisaabKitaab</h1>
+                <p>Track. Save. Grow.</p>
             </div>
           </nav>
 
@@ -239,7 +244,7 @@ const Auth = () => {
             </div>
 
             <div className="auth-heading">
-              <h2>{isLogin ? "Access FinanceOS" : "Create your workspace"}</h2>
+              <h2>{isLogin ? "Access HisaabKitaab" : "Create your account"}</h2>
               <p>
                 {isLogin
                   ? "Enter your credentials to open your finance dashboard."

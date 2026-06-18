@@ -1,0 +1,61 @@
+.brand-logo {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  box-shadow:
+    0 14px 28px rgba(15, 118, 110, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.brand-logo.large {
+  width: 58px;
+  height: 58px;
+}
+
+.brand-logo.small {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+
+.brand-logo svg {
+  width: 82%;
+  height: 82%;
+}
+
+.book-main {
+  fill: rgba(236, 253, 245, 0.22);
+  stroke: rgba(236, 253, 245, 0.42);
+  stroke-width: 2;
+}
+
+.wallet-main {
+  fill: rgba(236, 253, 245, 0.9);
+}
+
+.book-line {
+  stroke: rgba(236, 253, 245, 0.78);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.growth-path {
+  fill: none;
+  stroke: #0f766e;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.growth-dot {
+  fill: #0f766e;
+}
+
+.hk-small {
+  fill: #0f766e;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
