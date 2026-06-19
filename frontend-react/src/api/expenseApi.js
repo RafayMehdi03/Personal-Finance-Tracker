@@ -52,3 +52,25 @@ export const deleteExpense = async (id) => {
 
   return true;
 };
+export const updateExpense = async (id, expenseData) => {
+  const response = await fetch(`${API_BASE_URL}/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(expenseData),
+  });
+
+  if (!response.ok) {
+    let errorMessage = "Failed to update expense";
+
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch {
+      // ignore empty response
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+};

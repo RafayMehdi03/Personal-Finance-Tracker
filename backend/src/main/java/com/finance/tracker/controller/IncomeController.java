@@ -1,8 +1,8 @@
 package com.finance.tracker.controller;
 
-import com.finance.tracker.model.Expense;
+import com.finance.tracker.model.Income;
 import com.finance.tracker.model.User;
-import com.finance.tracker.repository.ExpenseRepository;
+import com.finance.tracker.repository.IncomeRepository;
 import com.finance.tracker.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -12,15 +12,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/incomes")
 @CrossOrigin(origins = "http://localhost:5173")
-public class ExpenseController {
+public class IncomeController {
 
-    private final ExpenseRepository expenseRepository;
+    private final IncomeRepository incomeRepository;
     private final UserRepository userRepository;
 
-    public ExpenseController(ExpenseRepository expenseRepository, UserRepository userRepository) {
-        this.expenseRepository = expenseRepository;
+    public IncomeController(IncomeRepository incomeRepository, UserRepository userRepository) {
+        this.incomeRepository = incomeRepository;
         this.userRepository = userRepository;
     }
 
@@ -39,53 +39,54 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public List<Expense> getAllExpenses(Authentication authentication) {
+    public List<Income> getAllIncomes(Authentication authentication) {
         User user = getLoggedInUser(authentication);
-        return expenseRepository.findByUserOrderByDateDesc(user);
+        return incomeRepository.findByUserOrderByDateDesc(user);
     }
 
     @PostMapping
-    public Expense createExpense(@RequestBody Expense expense, Authentication authentication) {
+    public Income createIncome(@RequestBody Income income, Authentication authentication) {
         User user = getLoggedInUser(authentication);
 
-        expense.setId(null);
-        expense.setUser(user);
+        income.setId(null);
+        income.setUser(user);
 
-        return expenseRepository.save(expense);
+        return incomeRepository.save(income);
     }
 
     @PutMapping("/{id}")
-    public Expense updateExpense(
+    public Income updateIncome(
             @PathVariable Long id,
-            @RequestBody Expense updatedExpense,
+            @RequestBody Income updatedIncome,
             Authentication authentication
     ) {
         User user = getLoggedInUser(authentication);
 
-        Expense existingExpense = expenseRepository.findByIdAndUser(id, user)
+        Income existingIncome = incomeRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Expense not found for this user"
+                        "Income not found for this user"
                 ));
 
-        existingExpense.setDescription(updatedExpense.getDescription());
-        existingExpense.setAmount(updatedExpense.getAmount());
-        existingExpense.setDate(updatedExpense.getDate());
-        existingExpense.setCategory(updatedExpense.getCategory());
+        existingIncome.setSource(updatedIncome.getSource());
+        existingIncome.setAmount(updatedIncome.getAmount());
+        existingIncome.setDate(updatedIncome.getDate());
+        existingIncome.setCategory(updatedIncome.getCategory());
+        existingIncome.setNote(updatedIncome.getNote());
 
-        return expenseRepository.save(existingExpense);
+        return incomeRepository.save(existingIncome);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteExpense(@PathVariable Long id, Authentication authentication) {
+    public void deleteIncome(@PathVariable Long id, Authentication authentication) {
         User user = getLoggedInUser(authentication);
 
-        Expense expense = expenseRepository.findByIdAndUser(id, user)
+        Income income = incomeRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Expense not found for this user"
+                        "Income not found for this user"
                 ));
 
-        expenseRepository.delete(expense);
+        incomeRepository.delete(income);
     }
 }
