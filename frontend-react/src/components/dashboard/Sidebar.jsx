@@ -48,6 +48,12 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout }) => {
         >
           Reports
         </button>
+        <button
+          className={activeSection === "settings" ? "active" : ""}
+          onClick={() => onSectionChange("settings")}
+          >
+          Settings
+        </button>
       </nav>
 
       <button className="logout-btn" onClick={onLogout}>

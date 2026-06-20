@@ -36,6 +36,7 @@ import IncomeManagementTable from "../components/dashboard/IncomeManagementTable
 import DeleteConfirmModal from "../components/dashboard/DeleteConfirmModal";
 import EditExpenseModal from "../components/dashboard/EditExpenseModal";
 import EditIncomeModal from "../components/dashboard/EditIncomeModal";
+import SettingsPage from "../components/dashboard/SettingsPage";
 
 import "./Dashboard.css";
 
@@ -582,6 +583,9 @@ const handleDeleteBudget = async (budget) => {
           incomes={incomes}
           formatPKR={formatPKR}
         />
+        )}
+        {activeSection === "settings" && (
+          <SettingsPage user={user} onLogout={handleLogout} />
         )}
       </section>
 
