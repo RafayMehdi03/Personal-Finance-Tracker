@@ -36,7 +36,7 @@ const ExpenseTable = ({ expenses, loading, formatPKR }) => {
                     <span className="category-pill">{expense.category}</span>
                   </td>
                   <td>{expense.date}</td>
-                  <td>{formatPKR(expense.amount)}</td>
+                  <td className="expense-amount">{formatPKR(expense.amount)}</td>
                 </tr>
               ))}
             </tbody>

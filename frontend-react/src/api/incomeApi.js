@@ -1,8 +1,8 @@
+import { getAuthToken, clearAuthData } from "../utils/authStorage";
+
 const API_BASE_URL = "http://localhost:8080/api/incomes";
 
-const getToken = () => {
-  return localStorage.getItem("hisaabkitaab_token");
-};
+const getToken = () => getAuthToken();
 
 const getAuthHeaders = () => {
   const token = getToken();
@@ -18,6 +18,12 @@ export const getIncomes = async () => {
     method: "GET",
     headers: getAuthHeaders(),
   });
+
+  if (response.status === 401 || response.status === 403) {
+    clearAuthData();
+    window.location.href = "/login";
+    throw new Error("Session expired. Please login again.");
+  }
 
   if (!response.ok) {
     throw new Error("Failed to fetch incomes");

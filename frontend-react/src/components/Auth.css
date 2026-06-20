@@ -659,3 +659,25 @@
   background: rgba(45, 212, 191, 0.35);
   color: #ffffff;
 }
+.remember-me-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 14px;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-me-row input {
+  width: 17px;
+  height: 17px;
+  accent-color: #0f766e;
+  cursor: pointer;
+}
+
+.remember-me-row span {
+  line-height: 1;
+}

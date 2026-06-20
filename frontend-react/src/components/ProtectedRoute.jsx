@@ -1,9 +1,8 @@
 import { Navigate } from "react-router-dom";
+import { isAuthenticated } from "../utils/authStorage";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("hisaabkitaab_token");
-
-  if (!token) {
+  if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
 

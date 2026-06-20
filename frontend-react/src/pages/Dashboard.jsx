@@ -1,3 +1,11 @@
+import {
+  createBudget,
+  deleteBudget,
+  getBudgets,
+} from "../api/budgetApi";
+import ReportsPage from "../components/dashboard/ReportsPage";
+import { clearAuthData, getAuthUser } from "../utils/authStorage";
+import BudgetPage from "../components/dashboard/BudgetPage";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Landmark, TrendingUp, Wallet } from "lucide-react";
@@ -38,14 +46,14 @@ const getTodayDate = () => {
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const storedUser = localStorage.getItem("hisaabkitaab_user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  const user = getAuthUser();
 
   const [activeSection, setActiveSection] = useState("overview");
   const [overviewMode, setOverviewMode] = useState("expenses");
 
   const [expenses, setExpenses] = useState([]);
   const [incomes, setIncomes] = useState([]);
+  const [budgets, setBudgets] = useState([]);
 
   const [expenseSortBy, setExpenseSortBy] = useState("date");
   const [expenseSortOrder, setExpenseSortOrder] = useState("desc");
@@ -137,13 +145,15 @@ const Dashboard = () => {
       setLoading(true);
       setMessage("");
 
-      const [expenseData, incomeData] = await Promise.all([
-        getExpenses(),
-        getIncomes(),
+      const [expenseData, incomeData, budgetData] = await Promise.all([
+      getExpenses(),
+      getIncomes(),
+      getBudgets(),
       ]);
 
       setExpenses(expenseData);
       setIncomes(incomeData);
+      setBudgets(budgetData);
     } catch (error) {
       console.error("Fetch dashboard data error:", error);
       setMessage("Unable to load dashboard data. Please login again.");
@@ -157,8 +167,7 @@ const Dashboard = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("hisaabkitaab_user");
-    localStorage.removeItem("hisaabkitaab_token");
+    clearAuthData();
     navigate("/login");
   };
 
@@ -374,6 +383,33 @@ const Dashboard = () => {
       setMessage("Unable to delete record.");
     }
   };
+  const handleCreateBudget = async (budgetData) => {
+  try {
+    setMessage("");
+
+    const newBudget = await createBudget(budgetData);
+
+    setBudgets((prev) => [newBudget, ...prev]);
+  } catch (error) {
+    console.error("Create budget error:", error);
+    setMessage("Unable to create budget.");
+  }
+};
+
+const handleDeleteBudget = async (budget) => {
+  try {
+    setMessage("");
+
+    await deleteBudget(budget.id);
+
+    setBudgets((prev) =>
+      prev.filter((existingBudget) => existingBudget.id !== budget.id)
+    );
+  } catch (error) {
+    console.error("Delete budget error:", error);
+    setMessage("Unable to delete budget.");
+  }
+};
 
   return (
     <main className="dashboard-page">
@@ -530,17 +566,22 @@ const Dashboard = () => {
         )}
 
         {activeSection === "budgets" && (
-          <section className="dashboard-panel placeholder-panel">
-            <h3>Budgets</h3>
-            <p>Budget planning will be added in the next phase.</p>
-          </section>
+        <BudgetPage
+        budgets={budgets}
+        expenses={expenses}
+        loading={loading}
+        formatPKR={formatPKR}
+        onCreateBudget={handleCreateBudget}
+        onDeleteBudget={handleDeleteBudget}
+        />
         )}
 
         {activeSection === "reports" && (
-          <section className="dashboard-panel placeholder-panel">
-            <h3>Reports</h3>
-            <p>Spending reports and charts will be added later.</p>
-          </section>
+        <ReportsPage
+          expenses={expenses}
+          incomes={incomes}
+          formatPKR={formatPKR}
+        />
         )}
       </section>
 

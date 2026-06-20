@@ -87,7 +87,7 @@ const TransactionsTable = ({
 
                   <td>{expense.date}</td>
 
-                  <td>{formatPKR(expense.amount)}</td>
+                  <td className="expense-amount">{formatPKR(expense.amount)}</td>
 
                   <td>
                     <div className="table-actions">

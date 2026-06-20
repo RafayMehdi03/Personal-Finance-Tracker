@@ -1,6 +1,6 @@
 import { getAuthToken, clearAuthData } from "../utils/authStorage";
 
-const API_BASE_URL = "http://localhost:8080/api/expenses";
+const API_BASE_URL = "http://localhost:8080/api/budgets";
 
 const getToken = () => getAuthToken();
 
@@ -13,7 +13,7 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getExpenses = async () => {
+export const getBudgets = async () => {
   const response = await fetch(API_BASE_URL, {
     method: "GET",
     headers: getAuthHeaders(),
@@ -26,57 +26,49 @@ export const getExpenses = async () => {
   }
 
   if (!response.ok) {
-    throw new Error("Failed to fetch expenses");
+    throw new Error("Failed to fetch budgets");
   }
 
   return response.json();
 };
 
-export const createExpense = async (expenseData) => {
+export const createBudget = async (budgetData) => {
   const response = await fetch(API_BASE_URL, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(expenseData),
+    body: JSON.stringify(budgetData),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create expense");
+    throw new Error("Failed to create budget");
   }
 
   return response.json();
 };
 
-export const deleteExpense = async (id) => {
+export const updateBudget = async (id, budgetData) => {
+  const response = await fetch(`${API_BASE_URL}/${id}`, {
+    method: "PUT",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(budgetData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update budget");
+  }
+
+  return response.json();
+};
+
+export const deleteBudget = async (id) => {
   const response = await fetch(`${API_BASE_URL}/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to delete expense");
+    throw new Error("Failed to delete budget");
   }
 
   return true;
-};
-export const updateExpense = async (id, expenseData) => {
-  const response = await fetch(`${API_BASE_URL}/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(expenseData),
-  });
-
-  if (!response.ok) {
-    let errorMessage = "Failed to update expense";
-
-    try {
-      const errorData = await response.json();
-      errorMessage = errorData.message || errorMessage;
-    } catch {
-      // ignore empty response
-    }
-
-    throw new Error(errorMessage);
-  }
-
-  return response.json();
 };
